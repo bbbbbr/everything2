@@ -6,6 +6,32 @@
 #
 # You are free to use/modify these files under the same terms as the Everything Engine itself
 
+package 'gnupg'
+
+template '/etc/apt/sources.list.d/e2apt.list' do
+  owner "root"
+  group "root"
+  mode "0755"
+  action "create"
+  source "e2apt.list.erb"
+end
+
+cookbook_file '/etc/apt/e2apt.pub.gpg' do
+  owner "root"
+  group "root"
+  mode "0755"
+  action :create_if_missing
+end
+
+execute "Add e2apt key" do
+  command "apt-key add /etc/apt/e2apt.pub.gpg"
+end
+
+execute "apt-get update" do
+  command "apt-get update"
+end
+
+package 'liblinux-pid-perl'
 
 to_install = [
     'apache2-mpm-prefork',
